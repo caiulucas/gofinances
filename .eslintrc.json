@@ -17,6 +17,7 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "camelcase": "off",
     "import/no-unresolved": 0,
     "react/jsx-filename-extension": [1, {
       "extensions": [
@@ -39,6 +40,12 @@
     "react/prop-types": 0,
     "react/style-prop-object": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    "@typescript-eslint/no-shadow": ["error"],
+    "import/no-extraneous-dependencies": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 }
