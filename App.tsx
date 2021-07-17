@@ -8,6 +8,7 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
 
+import { StatusBar } from 'react-native';
 import theme from './src/global/styles/theme';
 import { Dashboard } from './src/screens/Dashboard';
 
