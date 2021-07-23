@@ -9,9 +9,10 @@ import {
 } from '@expo-google-fonts/poppins';
 
 import { StatusBar } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import theme from './src/global/styles/theme';
-import { Dashboard } from './src/screens/Dashboard';
 import { Register } from './src/screens/Register';
+import { AppRoutes } from './src/routes/app.routes';
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -26,7 +27,14 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Register />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme.colors.primary}
+      />
+
+      <NavigationContainer>
+        <AppRoutes />
+      </NavigationContainer>
     </ThemeProvider>
   );
 };

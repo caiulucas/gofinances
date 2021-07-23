@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled, { css } from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
@@ -28,12 +29,17 @@ export const Container = styled.View<TypeProps>`
 
   margin-right: 16px;
 
-  ${({ type }) =>
-    type === 'total' &&
-    css`
-      background-color: ${({ theme }) => theme.colors.secondary};
-      margin-right: 0;
-    `}
+  ${({ type }) => {
+    if (type === 'total')
+      return css`
+        background-color: ${({ theme }) => theme.colors.secondary};
+      `;
+
+    if (type === 'down')
+      return css`
+        margin-right: 0;
+      `;
+  }}
 `;
 
 export const Header = styled.View`
