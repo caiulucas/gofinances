@@ -9,19 +9,21 @@ import {
 } from '@expo-google-fonts/poppins';
 
 import { StatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { Routes } from './src/routes';
 import theme from './src/global/styles/theme';
-import { Register } from './src/screens/Register';
-import { AppRoutes } from './src/routes/app.routes';
+import { SignIn } from './src/screens/SignIn';
+import { AuthProvider, useAuth } from './src/hooks/auth';
 
 const App: React.FC = () => {
+  const { userStorageLoading } = useAuth();
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_700Bold,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || userStorageLoading) {
     return <AppLoading />;
   }
 
@@ -32,9 +34,9 @@ const App: React.FC = () => {
         backgroundColor={theme.colors.primary}
       />
 
-      <NavigationContainer>
-        <AppRoutes />
-      </NavigationContainer>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ThemeProvider>
   );
 };

@@ -19,19 +19,19 @@ import { CategorySelect } from '../CategorySelect';
 import { Form, Fields, TransactionTypes } from './styles';
 import { Header } from '../../components/Header';
 import { Container } from '../../global/styles/styles';
+import { useAuth } from '../../hooks/auth';
 
 type FormData = {
   name: string;
   amount: string;
 };
 
-const dataKey = '@GoFinances:transactions';
-
 const schema = Yup.object().shape({
   name: Yup.string().required('Nome é obrigatório'),
   amount: Yup.number()
     .typeError('Informe um valor numérico')
-    .positive('O valor não pode ser negativo'),
+    .positive('O valor não pode ser negativo')
+    .required('Valor é obrigatório'),
 });
 
 export const Register: React.FC = () => {
@@ -41,8 +41,10 @@ export const Register: React.FC = () => {
     key: 'category',
     name: 'Categoria',
   });
-
   const navigation = useNavigation();
+  const { user } = useAuth();
+
+  const dataKey = `@GoFinances:transactions_user:${user.id}`;
 
   const {
     control,
@@ -104,7 +106,7 @@ export const Register: React.FC = () => {
         return Alert.alert('Não foi possível salvar');
       }
     },
-    [category, navigation, reset, transactionType],
+    [category.key, dataKey, navigation, reset, transactionType],
   );
 
   return (

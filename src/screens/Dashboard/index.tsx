@@ -22,6 +22,7 @@ import {
   TransactionList,
 } from './styles';
 import { Container } from '../../global/styles/styles';
+import { useAuth } from '../../hooks/auth';
 
 export interface DataListProps extends Transaction {
   id: number;
@@ -42,10 +43,12 @@ function getLastTransactionDate(
   collection: DataListProps[],
   type: 'income' | 'outcome',
 ) {
+  const filteredCollection = collection.filter(item => item.type === type);
+
+  if (filteredCollection === []) return filteredCollection;
+
   const lastTransactionsDate = Math.max(
-    ...collection
-      .filter(item => item.type === type)
-      .map(item => new Date(item.date).getTime()),
+    ...filteredCollection.map(item => new Date(item.date).getTime()),
   );
 
   return Intl.DateTimeFormat('pt-BR', {
@@ -62,10 +65,13 @@ export const Dashboard: React.FC = () => {
     total: { amount: formatCurrency(0), lastTransaction: '' },
   });
 
+  const { user, signOut } = useAuth();
+
   const loadTransactions = useCallback(async () => {
-    const dataKey = '@GoFinances:transactions';
+    const dataKey = `@GoFinances:transactions_user:${user.id}`;
     const response = await AsyncStorage.getItem(dataKey);
 
+    if (!response) return;
     const loadedTransactions: DataListProps[] = response
       ? JSON.parse(response)
       : [];
@@ -100,20 +106,29 @@ export const Dashboard: React.FC = () => {
     setHighlightData({
       income: {
         amount: formatCurrency(incomeValue),
-        lastTransaction: `Última entrada dia ${lastIncomeDate}`,
+        lastTransaction:
+          lastIncomeDate === []
+            ? 'Não há transações'
+            : `Última entrada dia ${lastIncomeDate}`,
       },
       outcome: {
         amount: formatCurrency(outcomeValue),
-        lastTransaction: `Última saída dia ${lastOutcomeDate}`,
+        lastTransaction:
+          lastOutcomeDate === []
+            ? 'Não há transações'
+            : `Última saída dia ${lastOutcomeDate}`,
       },
       total: {
         amount: formatCurrency(incomeValue - outcomeValue),
-        lastTransaction: `01 à ${lastOutcomeDate}`,
+        lastTransaction:
+          lastOutcomeDate === []
+            ? 'Não há transações'
+            : `01 à ${lastOutcomeDate}`,
       },
     });
 
     setTransactions(formattedTransactions);
-  }, []);
+  }, [user.id]);
 
   useFocusEffect(
     useCallback(() => {
@@ -126,15 +141,15 @@ export const Dashboard: React.FC = () => {
       <Header>
         <UserWrapper>
           <UserInfo>
-            <Photo source={{ uri: 'https://github.com/caiulucas.png' }} />
+            <Photo source={{ uri: user.avatar }} />
             <User>
               <UserGreeting>Olá,</UserGreeting>
-              <UserName>Caio Lucas</UserName>
+              <UserName>{user.name}</UserName>
             </User>
           </UserInfo>
 
           <LogoutButton>
-            <Icon name="power" onPress={() => console.log('pressed')} />
+            <Icon name="power" onPress={signOut} />
           </LogoutButton>
         </UserWrapper>
       </Header>
