@@ -145,6 +145,7 @@ export const Register: React.FC = () => {
             </TransactionTypes>
 
             <CategorySelectButton
+              testID="category-select-button"
               title={category.name}
               onPress={handleOpenSelectCategoryModal}
             />
@@ -153,7 +154,7 @@ export const Register: React.FC = () => {
           <Button title="Enviar" onPress={handleSubmit(handleRegister)} />
         </Form>
 
-        <Modal visible={categoryModalOpen}>
+        <Modal testID="category-modal" visible={categoryModalOpen}>
           <CategorySelect
             category={category}
             setCategory={setCategory}

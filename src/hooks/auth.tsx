@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useState,
+  useMemo,
 } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { string } from 'yargs';
 
 type User = {
   id: string;
@@ -87,7 +86,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         await AsyncStorage.setItem(userStorageKey, JSON.stringify(loadedUser));
       }
     } catch (err) {
-      throw new Error(err);
+      throw new Error(err as undefined);
     }
   };
 
@@ -97,13 +96,12 @@ export const AuthProvider: React.FC = ({ children }) => {
     await AsyncStorage.removeItem(userStorageKey);
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ user, userStorageLoading, signInWithGoogle, signOut }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ user, userStorageLoading, signInWithGoogle, signOut }),
+    [user, userStorageLoading],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextData => {
