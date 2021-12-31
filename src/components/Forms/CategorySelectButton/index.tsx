@@ -9,9 +9,10 @@ interface CategorySelectButtonProps extends RectButtonProps {
 export const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   title,
   onPress,
+  ...rest
 }) => {
   return (
-    <Container onPress={onPress}>
+    <Container onPress={onPress} {...rest}>
       <Category>{title}</Category>
       <Icon name="chevron-down" />
     </Container>
